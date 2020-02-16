@@ -4,19 +4,18 @@
 Vagrant.require_version ">= 1.5"
 
 $provisioning_script = <<SCRIPT
-# use remote git version instead of sharing a copy from host to preserve proper file permissions
-# and prevent permission related issues for the temp directory
-git clone https://github.com/armbian/build /home/vagrant/armbian
-mkdir -p /vagrant/output /vagrant/userpatches
+# use a copy instead of sharing a copy from host to preserve proper file permissions
+# and prevent permission related issues for the .tmp directory
+rsync -ar /vagrant/ /home/vagrant/armbian
+mkdir -p /vagrant/output
 ln -sf /vagrant/output /home/vagrant/armbian/output
-ln -sf /vagrant/userpatches /home/vagrant/armbian/userpatches
 SCRIPT
 
 Vagrant.configure(2) do |config|
 
     # What box should we base this build on?
-    config.vm.box = "ubuntu/bionic64"
-    config.vm.box_version = ">= 20180719.0.0"
+    config.vm.box = "generic/ubuntu1804"
+    config.vm.synced_folder './', '/vagrant', type: 'nfs'
 
     #######################################################################
     # THIS REQUIRES YOU TO INSTALL A PLUGIN. RUN THE COMMAND BELOW...
@@ -24,7 +23,7 @@ Vagrant.configure(2) do |config|
     #   $ vagrant plugin install vagrant-disksize
     #
     # Default images are not big enough to build Armbian.
-    config.disksize.size = "40GB"
+    # config.disksize.size = "40GB"
 
     # provisioning: install dependencies, download the repository copy
     config.vm.provision "shell", inline: $provisioning_script
@@ -42,9 +41,15 @@ Vagrant.configure(2) do |config|
 
         # uncomment this to enable the VirtualBox GUI
         #vb.gui = true
-
         # Tweak these to fit your needs.
         #vb.memory = "8192"
         #vb.cpus = "4"
+    end
+    config.vm.provider "libvirt" do |domain|
+        domain.machine_virtual_size = 40
+        domain.nested = true
+        # Tweak these to fit your needs.
+        domain.memory = "2048"
+        domain.cpus = "4"
     end
 end
