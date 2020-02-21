@@ -596,8 +596,8 @@ prepare_host()
 
 	if [[ ${#deps[@]} -gt 0 ]]; then
 		display_alert "Installing build dependencies"
-		apt -q update
-		apt -y upgrade
+#		apt -q update
+#		apt -y upgrade
 		apt -q -y --no-install-recommends install "${deps[@]}" | tee -a $DEST/debug/hostdeps.log
 		update-ccache-symlinks
 	fi
