@@ -1,0 +1,14 @@
+name: Build InternetCube Image
+
+on: [push]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-18.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: ./compile.sh CLEAN_LEVEL="" KERNEL_ONLY="no" KERNEL_CONFIGURE="no" BUILD_DESKTOP="no" BUILD_ALL="no" BOARD="lime2" BRANCH="next" RELEASE="stretch"
