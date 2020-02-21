@@ -10,5 +10,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Cache 
+      uses: actions/cache@v1
+      env:
+        cache-name: toolchains-rootfs-utility-sources
+      with:
+        path: ./cache
+        key: ${{ runner.os }}-build-${{ env.cache-name }}
     - name: Build
       run: ./compile.sh CLEAN_LEVEL="" KERNEL_ONLY="no" KERNEL_CONFIGURE="no" BUILD_DESKTOP="no" BUILD_ALL="no" BOARD="lime2" BRANCH="next" RELEASE="stretch"
+    - name: Archive builded image
+      uses: actions/upload-artifact@v1
+      with:
+        name: images
+        path: output/images
