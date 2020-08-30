@@ -50,7 +50,7 @@ sed -i '/backport/ s/^deb/#deb/' /etc/apt/sources.list
 chage -d 99999999 root
 
 # Run the install script
-curl https://install.yunohost.org/stretch | bash -s -- -a -d $YNH_BUILDER_BRANCH
+curl https://install.yunohost.org/buster | bash -s -- -a -d $YNH_BUILDER_BRANCH
 rm /var/log/yunohost-installation*
 
 if [[ $YNH_BUILDER_INSTALL_INTERNETCUBE == "yes" ]]
